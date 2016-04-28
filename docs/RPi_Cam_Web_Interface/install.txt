@@ -1,0 +1,43 @@
++++ readlink -f ./install.sh
+++ dirname /home/pi/venv/feeder/feeder/RPi_Cam_Web_Interface/install.sh
++ cd /home/pi/venv/feeder/feeder/RPi_Cam_Web_Interface
+++ dpkg-query -W '-f=${Status}' dialog
+++ grep -c 'ok installed'
++ '[' 1 -eq 0 ']'
++ color_red='tput setaf 1'
++ color_green='tput setaf 2'
++ color_reset='tput sgr0'
++ versionfile=./www/config.php
+++ cat ./www/config.php
+++ grep ''\''APP_VERSION'\'''
+++ cut -d \' -f4
++ version=v6.0.37
++ backtitle='Copyright (c) 2015, Bob Tidey. RPi Cam v6.0.37'
++ '[' '!' -e ./config.txt ']'
++ source ./config.txt
+++ rpicamdir=html
+++ webserver=apache
+++ webport=8080
+++ user=
+++ webpasswd=
+++ autostart=yes
++ rpicamdirold=html
++ '[' '!' h == '' ']'
++ rpicamdirold=/html
++ rm exitfile.txt
++ '[' 0 -eq 0 ']'
++ exec
++ read -r rpicamdir
++ dialog --separate-widget '
+' --title 'Configuration Options' --backtitle 'Copyright (c) 2015, Bob Tidey. RPi Cam v6.0.37' --form '' 0 0 0 'Cam subfolder:' 1 1 html 1 32 15 0 'Autostart:(yes/no)' 2 1 yes 2 32 15 0 'Server:(apache/nginx)' 3 1 apache 3 32 15 0 Webport: 4 1 8080 4 32 15 0 'User:(blank=nologin)' 5 1 '' 5 32 15 0 Password: 6 1 '' 6 32 15 0
++ read -r autostart
++ read -r webserver
++ read -r webport
++ read -r user
++ read -r webpasswd
++ '[' -n '' ']'
++ echo exit
++ exec
++ '[' -e exitfile.txt ']'
++ rm exitfile.txt
++ exit

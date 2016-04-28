@@ -1,0 +1,14 @@
++++ readlink -f ./stop.sh
+++ dirname /home/pi/venv/feeder/feeder/RPi_Cam_Web_Interface/stop.sh
++ cd /home/pi/venv/feeder/feeder/RPi_Cam_Web_Interface
++ source ./config.txt
+++ rpicamdir=html
+++ webserver=apache
+++ webport=8080
+++ user=
+++ webpasswd=
+++ autostart=yes
++ fn_stop
++ sudo killall raspimjpeg
++ sudo killall php
++ sudo killall motion

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Cat Feeder</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="icon" href="/static/images/titleIcon.png">
+
+    <!-- Custom CSS -->
+    <link href="static/css/tableStyle.css" rel="stylesheet">
+    <link href="static/css/feedButton.css" rel="stylesheet">
+    <link href="static/css/camButton.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<nav class="navbar navbar-default">
+  <div class="navbar-header">
+        <p class="navbar-brand1 navbar-brand navBarTitle">Cat Feeder</p>
+      <img class="img-responsive" src="/static/images/titleIcon.png" width="75" height="75" >
+  </div>
+</nav>
+
+
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    {% for message in messages %}
+    <div id="message" class="alert alert-success">
+        <h4 class="alert-heading">MESSAGE</h4>
+        {{ message }}
+        <br>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+    {% endwith %}
+
+
+
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <form role="form" name="feedbuttonclick" method="post" action="/feedbuttonclick">
+                <button class="btn btn-lg feedButton" type="submit">Feed Now!!</button>
+            </form>
+        </div>
+        <div class="col-md-6 text-center">
+            <br>
+            <form role="form" action="{{cameraSiteAddress}}">
+                <button class="btn btn-lg camButton" type="submit">Live Video</button>
+            </form>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="FeedTable table">
+                <thead>
+                <th>Latest Feed Times</th>
+                <th>Feed Source</th>
+                </thead>
+                <tbody>
+                {% for entry in latestXNumberFeedTimes %}
+                <tr>
+                    <td>{{entry[0]}}</td>
+                    <td>{{entry[1]}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <form name="myForm" method="post">
+                <table class="table" id="upcomingFeedTimesTable">
+                    <thead>
+                    <tr>
+                        <th>Scheduled Times</th>
+                        <th>Delete Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entry in upcomingXNumberFeedTimes %}
+                    <tr>
+                        <td>{{entry[0]}}</td>
+                        <td class="text-center">
+                            <input class="btn-sm btn-danger" type="button" value="Delete" onclick="deleteRow(this)"/>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+            <div>
+                <h4>Schedule a Feed Time</h4>
+                <form role="form" name="scheduleDatetime" method="post" action="/scheduleDatetime">
+                    <input type="datetime-local" name="scheduleDatetime">
+                    <input class="btn btn-primary" type="submit" value="Schedule">
+                </form>
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+        function deleteRow(btn){
+            var table=document.getElementById('upcomingFeedTimesTable');
+            var i=btn.parentNode.parentNode.rowIndex;
+            var cellVal=table.rows[i].cells[0].innerHTML;
+            document.myForm.action = "{{url_for('deleteRow',history='cellVal')}}".replace('cellVal',cellVal)
+            document.myForm.submit();
+        }
+</script>
+
+
+
+</body>
+
+
+
+</html>

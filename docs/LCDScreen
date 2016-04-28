@@ -1,0 +1,47 @@
+git clone git://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code.git
+
+cd Adafruit-Raspberry-Pi-Python-Code/
+cd Adafruit_CharLCD
+chmod +x Adafruit_CharLCD.py 
+sudo nano Adafruit_CharLCD.py 
+
+
+change pins 
+def __init__(self, pin_rs=26, pin_e=19, pins_db=[13, 06, 05, 11], 
+
+sudo ./Adafruit_CharLCD_IPclock_example.py 
+
+
+from Adafruit_CharLCD import Adafruit_CharLCD
+lcd=Adafruit_CharLCD()
+lcd.clear()
+lcd.message(" Adafruit 16x2 \n Standard LCD")
+lcd.clear()
+lcd.cursor()
+lcd.blink()
+lcd.noCursor()
+lcd.clear()
+lcd.noBlink()
+lcd.begin(16,2)
+lcd.setCursor(7,0)
+lcd.message('123')
+lcd.message('x')
+lcd.clear()
+import time
+for x in range (0,16):
+...     lcd.scrollDisplayRight()
+...     time.sleep(.1)
+... 
+
+ for x in range (0,16):
+...     lcd.DisplayLeft()
+...     time.sleep(.1)
+... 
+
+lcd.noDisplay()
+lcd.display()
+ 
+-------------------_START CRON JOB
+sudo crontab -e
+@reboot python /home/pi/Documents/mytest.py &
+sudo shutdown -h now

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Cat Feeder Admin</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="icon" href="/static/images/titleIcon.png">
+
+    <!-- Custom Fonts -->
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        #TimeServiceIcon {display:inline-block}
+        #TimeServiceStatus {display:inline-block}
+        #TimeServiceMessage {display:inline-block}
+        #startTimeService {display:inline-block}
+        #stopTimeService {display:inline-block}
+        #ButtonServiceIcon {display:inline-block}
+        #ButtonServiceStatus {display:inline-block}
+        #ButtonServiceMessage {display:inline-block}
+        #startButtonService {display:inline-block}
+        #stopButtonService {display:inline-block}
+    </style>
+
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    {% for message in messages %}
+    <div id="message" class="alert alert-success">
+        <h4 class="alert-heading">MESSAGE</h4>
+        <br>
+        {{ message }}
+        <br>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+    {% endwith %}
+
+
+    <div id="TimeService">
+        <img id="TimeServiceIcon" src="/static/images/greencircle.png" height="20" width="20">
+        <h4 id="TimeServiceStatus">Time Service Status:</h4>
+        <h5 id="TimeServiceMessage">{{timeServiceFinalStatus}}</h5>
+        <form role="form" id="startTimeService" method="post" action="/startTimeService">
+            <button class="btn btn-success" type="submit">Start</button>
+        </form>
+        <form role="form" id="stopTimeService" method="post" action="/stopTimeService">
+            <button class="btn btn-danger" type="submit">Stop</button>
+        </form>
+    </div>
+    <div id="ButtonService">
+        <img id="ButtonServiceIcon" src="/static/images/greencircle.png" height="20" width="20">
+        <h4 id="ButtonServiceStatus">Button Service Status:</h4>
+        <h5 id="ButtonServiceMessage">{{buttonServiceFinalStatus}}</h5>
+        <form role="form" id="startButtonService" method="post" action="/startButtonService">
+            <button class="btn btn-success" type="submit">Start</button>
+        </form>
+        <form role="form" id="stopButtonService" method="post" action="/stopButtonService">
+            <button class="btn btn-danger" type="submit">Stop</button>
+        </form>
+    </div>
+
+    <div>
+        <a href="/" class="btn btn-primary">Home</a>
+    </div>
+
+
+</div>
+
+
+    <script>
+        var a=document.getElementById("TimeServiceMessage");
+        var endSearch=a.innerHTML.indexOf("(");
+        var substring=a.innerHTML.substring(0,endSearch)
+        substring=substring.trim()
+
+        if (substring == "active") {
+            document.getElementById("TimeServiceIcon").setAttribute("src","/static/images/greencircle.png")
+        }
+        if (substring == "inactive") {
+            document.getElementById("TimeServiceIcon").setAttribute("src","/static/images/redcircle.png")
+        }
+    </script>
+
+    <script>
+        var a=document.getElementById("ButtonServiceMessage");
+        var endSearch=a.innerHTML.indexOf("(");
+        var substring=a.innerHTML.substring(0,endSearch)
+        substring=substring.trim()
+
+        if (substring == "active") {
+            document.getElementById("ButtonServiceIcon").setAttribute("src","/static/images/greencircle.png")
+        }
+        if (substring == "inactive") {
+            document.getElementById("ButtonServiceIcon").setAttribute("src","/static/images/redcircle.png")
+        }
+    </script>
+
+</body>
+
+
+
+</html>

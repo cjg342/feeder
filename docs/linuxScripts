@@ -1,0 +1,87 @@
+sudo apt-get install git
+sudo apt-get install virtualenv
+virtualenv feeder
+git clone http://github.com/cjg342/feeder.git
+
+sudo apt-get install python-dev
+sudo apt-get install sqlite3
+
+pip install RPi.GPIO
+pip install picamera
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>SERVICE SETUP
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+sudo cp myservice.sh /etc/init.d
+sudo chmod 755 myservice.sh
+sudo update-rc.d myservice.sh defaults
+sudo /etc/init.d/myservice.sh start
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>NO PASSWD PROMPT FOR ROOT
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+sudo visudo
+pi ALL=(ALL) NOPASSWD: ALL
+pi ALL=(root) NOPASSWD: ALL
+www-data ALL=(root) NOPASSWD: ALL
+
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>APACHE SETUP
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<img src="{{ url_for('video_feedzzzz') }}">
+
+sudo apt-get install apache2
+sudo apt-get install libapache2-mod-wsgi
+
+-----WSGI File
+create /home/pi/venv/feeder/feeder/feeder.wsgi
+
+import os, sys
+ 
+activate_this = '/home/pi/venv/feeder/bin/activate_this.py'
+execfile(activate_this, dict(__file__=activate_this))
+
+sys.path.append('/home/pi/venv/feeder/feeder')
+ 
+from app import app as application
+
+-------give run permission
+sudo chmod 777 -R /home/pi/venv/feeder/ (not sure if neccessary)
+
+----edit /etc/apache2/sites-available/000-default.conf
+Listen 1234
+NameVirtualHost *:1234
+
+<VirtualHost *:80 *:1234>
+  ServerName feed.chefched.com
+  ServerAlias feed.trailmix.rocks
+
+  WSGIDaemonProcess feeder user=www-data group=www-data threads=5
+  WSGIScriptAlias / /home/pi/venv/feeder/feeder/feeder.wsgi
+
+  <Directory /home/pi/venv/feeder/feeder>
+    WSGIProcessGroup feeder
+    Order allow,deny
+    Allow from all
+    Require all granted
+  </Directory>
+
+  <Files feeder.wsgi>
+       Order allow,deny
+       Allow from all
+  </Files>
+
+  ErrorLog /home/pi/venv/feeder/feeder/logs/apacheError.log
+  CustomLog /home/pi/venv/feeder/feeder/logs/apacheAccess.log combined
+</VirtualHost>
+
+----------Add apache2 user (www-data) to gpio group for sudo access!!
+sudo usermod -a -G gpio www-data
+
+------!!!!!!!!!!!!!!!!!!!!!!!!!!PASTE ABOVE INTO Raspicamera.config in /etc/apache2/siteavaiable!!!!!!!!!!!!!!!!!!!!!!!!
+

@@ -1,0 +1,51 @@
+>>> def constantspinner():
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(7,GPIO.OUT)
+	pwm=GPIO.PWM(7,50)
+	pwm.start(1)
+	time.sleep(1)
+	for i in range (0,180):
+		DC=1.0/18.0*(i)+2
+		pwm.ChangeDutyCycle(DC)
+		time.sleep(.01)
+	for i in range (180,0,-1):
+		DC=1.0/18.0*(i)+2
+		pwm.ChangeDutyCycle(DC)
+		time.sleep(.01)
+	pwm.stop()
+	GPIO.cleanup()
+
+import RPi.GPIO as GPIO
+import time
+constantspinner()
+def spinner(value):
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(11,GPIO.OUT)
+	pwm=GPIO.PWM(11,50)
+	pwm.start(value)
+	time.sleep(.5)
+	pwm.stop()
+	GPIO.cleanup()
+
+while turn<=1000:
+	spinner(1)
+	time.sleep(.5)
+	spinner(1)
+	time.sleep(.5)
+	spinner(14)
+	time.sleep(.5)
+	spinner(14)
+	time.sleep(.5)
+	turn+=1
+
+def spinner(value):
+	turn=0
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(11,GPIO.OUT)
+	pwm=GPIO.PWM(11,50)
+	while turn<=3:
+		pwm.start(value)
+		time.sleep(.5)
+		turn=turn+1
+	pwm.stop()
+	GPIO.cleanup()

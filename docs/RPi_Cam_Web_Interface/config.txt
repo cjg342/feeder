@@ -1,0 +1,8 @@
+#This is edited config file for main installer. Put any extra options in here.
+rpicamdir="html"
+webserver="apache"
+webport="8080"
+user=""
+webpasswd=""
+autostart="yes"
+

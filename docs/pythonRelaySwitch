@@ -1,0 +1,24 @@
+import RPi.GPIO as GPIO
+import time
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.cleanup()
+GPIO.setup(11, GPIO.OUT)
+GPIO.output(11, GPIO.HIGH)
+GPIO.output(11, GPIO.LOW)
+GPIO.cleanup()
+
+def spinner(pin,duration):
+	GPIO.setwarnings(False)
+	GPIO.cleanup(pin)
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(pin, GPIO.OUT)
+	GPIO.output(pin, GPIO.HIGH)
+	GPIO.output(pin, GPIO.LOW)
+	time.sleep(duration)
+	GPIO.output(pin, GPIO.HIGH)
+	GPIO.cleanup(pin)
+
+
+m4 m6 two holes on left
+h4 h6
