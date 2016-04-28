@@ -5,7 +5,7 @@ import time
 from Adafruit_CharLCD import Adafruit_CharLCD
 import datetime
 import os
-
+import subprocess
 
 dir = os.path.dirname(__file__)  # os.getcwd()
 # configFilePath=os.path.abspath(os.path.join(dir,"..")) #up one
@@ -153,3 +153,4 @@ def print_to_LCDScreen (message):
         return 'true'
     except Exception,e:
         return e
+

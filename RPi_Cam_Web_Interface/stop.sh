@@ -48,3 +48,4 @@ fn_stop ()
 
 #stop operation
 fn_stop
+echo Stop Complete

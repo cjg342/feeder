@@ -92,13 +92,73 @@ def admin_page():
         timeServiceFullOutput = ControlService('feederTimeService', 'status')
         timeServiceFinalStatus = CleanServiceStatusOutput(timeServiceFullOutput)
 
+        ipAddress = request.remote_addr
+        cameraSiteAddress=''
+        if str(ipAddress).startswith('192.'):
+            cameraSiteAddress='http://192.168.0.113:8080/html/indexORIGINAL.php'
+        else:
+            cameraSiteAddress = 'http://cjg342.duckdns.org:8080/html/indexORIGINAL.php'
+
+        webcamServiceStatus=controlWebcamServices("status")
+        if 'raspimjpeg' in str(webcamServiceStatus):
+            webcamServiceFinalStatus='active'
+        else:
+            webcamServiceFinalStatus='inactive'
+
         return render_template('admin.html'
                                ,buttonServiceFinalStatus=buttonServiceFinalStatus
-                               ,timeServiceFinalStatus=timeServiceFinalStatus)
+                               ,timeServiceFinalStatus=timeServiceFinalStatus
+                               ,cameraSiteAddress=cameraSiteAddress
+                               ,webcamServiceFinalStatus=webcamServiceFinalStatus
+                               )
         #return render_template('home.html', LatestXNumberFeedTimes=LatestXNumberFeedTimes,dir=dir,fd=fd)
 
     except Exception,e:
         return render_template('error.html',resultsSET=e)
+
+@app.route('/startWebcamService', methods=['GET', 'POST'])
+def startWebcamService():
+    try:
+
+        d = controlWebcamServices('start')
+
+        flash(d)
+        return redirect(url_for('admin_page'))
+    except Exception,e:
+        return render_template('error.html',resultsSET=e)
+
+@app.route('/stopWebcamService', methods=['GET', 'POST'])
+def stopWebcamService():
+    try:
+
+        d = controlWebcamServices('stop')
+
+        flash(d)
+        return redirect(url_for('admin_page'))
+    except Exception,e:
+        return render_template('error.html',resultsSET=e)
+
+
+
+def controlWebcamServices(command):
+    try:
+
+        if command=='start':
+            process = subprocess.Popen(['/home/pi/venv/feeder/feeder/RPi_Cam_Web_Interface/start.sh']
+                               ,stdout=subprocess.PIPE
+                            )
+            return process.stdout.read()
+        elif command=='stop':
+            process = subprocess.Popen(['/home/pi/venv/feeder/feeder/RPi_Cam_Web_Interface/stop.sh']
+                                       ,stdout=subprocess.PIPE
+                                       )
+            return process.stdout.read()
+        elif command=='status':
+            d = subprocess.check_output(('ps', '-A'))
+            return d
+
+    except Exception,e:
+        return e
 
 
 
@@ -232,10 +292,10 @@ def ControlService(serviceToCheck,command):
                            stdout=subprocess.PIPE,
                            stderr=subprocess.STDOUT)
         return process.stdout.read()
-
-
     except Exception,e:
         return render_template('error.html',resultsSET=e)
+
+
 
 def CleanServiceStatusOutput(serviceOutput):
     try:
@@ -249,8 +309,6 @@ def CleanServiceStatusOutput(serviceOutput):
         buttonServiceFinalStatus[buttonServiceStartString:buttonServiceEndString], '')
 
         return buttonServiceFinalStatus
-
-
     except Exception,e:
         return render_template('error.html',resultsSET=e)
 
