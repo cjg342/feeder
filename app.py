@@ -40,7 +40,13 @@ hopperGPIO =str(configParser.get('feederConfig', 'hopperGPIO'))
 hopperTime =str(configParser.get('feederConfig', 'hopperTime'))
 
 
-
+#####################################################################################
+#####################################################################################
+#####################################################################################
+##########################################HOME PAGE##################################
+#####################################################################################
+#####################################################################################
+#####################################################################################
 @app.route('/', methods=['GET', 'POST'])
 def home_page():
     try:
@@ -81,6 +87,71 @@ def home_page():
         return render_template('error.html',resultsSET=e)
 
 
+@app.route('/feedbuttonclick', methods=['GET', 'POST'])
+def feedbuttonclick():
+    try:
+        dateNowObject = datetime.datetime.now()
+
+        spin = commonTasks.spin_hopper(hopperGPIO, hopperTime)
+        if spin <> 'ok':
+            flash('Error! The ladies have not been feed! Error Message: ' + spin,'error')
+            return redirect(url_for('home_page'))
+
+        dbInsert=commonTasks.db_insert_feedtime(dateNowObject,2)
+        if dbInsert <> 'ok':
+            flash('Warning. Database did not update: '+dbInsert,'warning')
+
+        updatescreen = commonTasks.print_to_LCDScreen(commonTasks.get_last_feedtime_string())
+        if updatescreen <> 'ok':
+            flash('Warning. Screen feedtime did not update: '+updatescreen)
+
+        flash('Feed success!')
+
+        return redirect(url_for('home_page'))
+    except Exception,e:
+        return render_template('error.html',resultsSET=e)
+
+
+@app.route('/scheduleDatetime', methods=['GET', 'POST'])
+def scheduleDatetime():
+    try:
+        scheduleDatetime = [request.form['scheduleDatetime']][0]
+        dateobject=datetime.datetime.strptime(scheduleDatetime,'%Y-%m-%dT%H:%M')
+        dbInsert = commonTasks.db_insert_feedtime(dateobject, 0)
+        if dbInsert <> 'ok':
+            flash('Error! The time has not been scheduled! Error Message: ' + dbInsert,'error')
+            return redirect(url_for('home_page'))
+
+        flash("Time Scheduled!")
+        return redirect(url_for('home_page'))
+    except Exception,e:
+        return render_template('error.html',resultsSET=e)
+
+
+@app.route('/deleteRow/<history>', methods=['GET', 'POST'])
+def deleteRow(history):
+    try:
+        dateObj = datetime.datetime.strptime(history, "%m-%d-%y %I:%M:%S %p")
+        deleteRowFromDB=deleteUpcomingFeedingTime(str(dateObj))
+        if deleteRowFromDB <> 'ok':
+            flash('Error! The row has not been deleted! Error Message: ' + deleteRowFromDB,'error')
+            return redirect(url_for('home_page'))
+
+        flash("Scheduled time "+str(history)+" deleted!")
+
+
+        return redirect(url_for('home_page'))
+
+    except Exception,e:
+        return render_template('error.html',resultsSET=e)
+
+######################################################################################
+######################################################################################
+######################################################################################
+##########################################ADMIN PAGE##################################
+######################################################################################
+######################################################################################
+######################################################################################
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_page():
@@ -139,7 +210,6 @@ def stopWebcamService():
         return render_template('error.html',resultsSET=e)
 
 
-
 def controlWebcamServices(command):
     try:
 
@@ -162,42 +232,10 @@ def controlWebcamServices(command):
 
 
 
-@app.route('/feedbuttonclick', methods=['GET', 'POST'])
-def feedbuttonclick():
-    try:
-
-        dateNowObject = datetime.datetime.now()
-        spin = commonTasks.spin_hopper(hopperGPIO, hopperTime)
-        dbInsert=commonTasks.db_insert_feedtime(dateNowObject,2)
-        updatescreen = commonTasks.print_to_LCDScreen(commonTasks.get_last_feedtime_string())
-
-        flash('Feed success!')
-        return redirect(url_for('home_page'))
-    except Exception,e:
-        return render_template('error.html',resultsSET=e)
 
 
-@app.route('/scheduleDatetime', methods=['GET', 'POST'])
-def scheduleDatetime():
-    try:
-        scheduleDatetime = [request.form['scheduleDatetime']][0]
-        dateobject=datetime.datetime.strptime(scheduleDatetime,'%Y-%m-%dT%H:%M')
-        dbInsert = commonTasks.db_insert_feedtime(dateobject, 0)
 
-        flash("Time Scheduled!")
-        return redirect(url_for('home_page'))
-    except Exception,e:
-        return render_template('error.html',resultsSET=e)
 
-@app.route('/deleteRow/<history>', methods=['GET', 'POST'])
-def deleteRow(history):
-    try:
-        deleteRowFromDB=deleteUpcomingFeedingTime(history)
-        flash("Scheduled time "+str(history)+" deleted!")
-        return redirect(url_for('home_page'))
-
-    except Exception,e:
-        return render_template('error.html',resultsSET=e)
 
 
 
@@ -281,7 +319,7 @@ def deleteUpcomingFeedingTime(dateToDate):
         con.commit()
         cur.close()
         con.close()
-        return True
+        return 'ok'
     except Exception,e:
         return render_template('error.html',resultsSET=e)
 

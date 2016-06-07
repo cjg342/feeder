@@ -33,7 +33,7 @@ def db_insert_feedtime(dateObject,complete):
         cur.close()
         con.close()
 
-        return 'true'
+        return 'ok'
     except Exception,e:
         return e.message
 # def db_get_last_feedtime():
@@ -116,7 +116,7 @@ def spin_hopper(pin,duration):
         GPIO.output(pin, GPIO.HIGH)
         GPIO.cleanup(pin)
 
-        return 'true'
+        return 'ok'
     except Exception,e:
         return e
 
@@ -150,7 +150,7 @@ def print_to_LCDScreen (message):
         # lcd.message('123')
         # lcd.message('x')
         # lcd.clear()
-        return 'true'
+        return 'ok'
     except Exception,e:
         return e
 
