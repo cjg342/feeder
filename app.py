@@ -73,14 +73,18 @@ def home_page():
 
         ipAddress = request.remote_addr
         cameraSiteAddress=''
+        localOrRemote=''
         if str(ipAddress).startswith('192.'):
             cameraSiteAddress='http://192.168.0.113:8080/html/'
+            localOrRemote='local'
         else:
             cameraSiteAddress = 'http://cjg342.duckdns.org:8080/html/'
+            localOrRemote='remote'
 
         return render_template('home.html',latestXNumberFeedTimes=finalFeedTimeList
                                ,upcomingXNumberFeedTimes=finalUpcomingFeedTimeList
                                ,cameraSiteAddress=cameraSiteAddress
+                               ,localOrRemote=localOrRemote
                                )
 
     except Exception,e:
@@ -165,10 +169,13 @@ def admin_page():
 
         ipAddress = request.remote_addr
         cameraSiteAddress=''
+        localOrRemote = ''
         if str(ipAddress).startswith('192.'):
             cameraSiteAddress='http://192.168.0.113:8080/html/indexORIGINAL.php'
+            localOrRemote = 'local'
         else:
             cameraSiteAddress = 'http://cjg342.duckdns.org:8080/html/indexORIGINAL.php'
+            localOrRemote = 'remote'
 
         webcamServiceStatus=controlWebcamServices("status")
         if 'raspimjpeg' in str(webcamServiceStatus):
@@ -181,6 +188,7 @@ def admin_page():
                                ,timeServiceFinalStatus=timeServiceFinalStatus
                                ,cameraSiteAddress=cameraSiteAddress
                                ,webcamServiceFinalStatus=webcamServiceFinalStatus
+                               ,localOrRemote=localOrRemote
                                )
         #return render_template('home.html', LatestXNumberFeedTimes=LatestXNumberFeedTimes,dir=dir,fd=fd)
 

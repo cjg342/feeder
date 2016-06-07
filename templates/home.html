@@ -9,7 +9,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Cat Feeder</title>
+    {% if localOrRemote == 'local' %}
+        <title>INTERNAL Cat Feeder</title>
+    {% else %}
+        <title>EXTERNAL Cat Feeder</title>
+    {% endif %}
+
 
     <!-- Bootstrap Core CSS -->
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
