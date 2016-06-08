@@ -149,6 +149,17 @@ def deleteRow(history):
     except Exception,e:
         return render_template('error.html',resultsSET=e)
 
+def deleteUpcomingFeedingTime(dateToDate):
+    try:
+        con = commonTasks.connect_db()
+        cur = con.execute("""delete from feedtimes where feeddate=?""", [str(dateToDate), ])
+        con.commit()
+        cur.close()
+        con.close()
+        return 'ok'
+    except Exception, e:
+        return render_template('error.html', resultsSET=e)
+
 ######################################################################################
 ######################################################################################
 ######################################################################################
@@ -238,16 +249,6 @@ def controlWebcamServices(command):
     except Exception,e:
         return e
 
-
-
-
-
-
-
-
-
-
-
 @app.route('/startButtonService', methods=['GET', 'POST'])
 def startButtonService():
     try:
@@ -288,48 +289,6 @@ def stopTimeService():
         return redirect(url_for('admin_page'))
     except Exception, e:
         return render_template('error.html', resultsSET=e)
-# ----------------------------------WEBSITE ONLY METHODS
-# def LastFeedingTimes(numberToGet):
-#     try:
-#         con=commonTasks.connect_db()
-#         cur=con.execute(''' select feeddate,completed
-#                             from feedtimes
-#                             where completed<>0
-#                             order by feeddate desc
-#                             limit ?''',[str(numberToGet),])
-#         LastFeedingTimes = cur.fetchall()
-#         cur.close()
-#         con.close()
-#         return LastFeedingTimes
-#     except Exception,e:
-#         return render_template('error.html',resultsSET=e)
-
-# def UpcomingFeedingTimes(numberToGet):
-#     try:
-#         con=commonTasks.connect_db()
-#         cur=con.execute(''' select feeddate
-#                             from feedtimes
-#                             where completed=0
-#                             order by feeddate
-#                             limit ?''',[str(numberToGet),])
-#         UpcomingFeedingTimes = cur.fetchall()
-#         cur.close()
-#         con.close()
-#         return UpcomingFeedingTimes
-#     except Exception,e:
-#         return render_template('error.html',resultsSET=e)
-
-
-def deleteUpcomingFeedingTime(dateToDate):
-    try:
-        con = commonTasks.connect_db()
-        cur = con.execute("""delete from feedtimes where feeddate=?""",[str(dateToDate),])
-        con.commit()
-        cur.close()
-        con.close()
-        return 'ok'
-    except Exception,e:
-        return render_template('error.html',resultsSET=e)
 
 def ControlService(serviceToCheck,command):
     try:
@@ -340,8 +299,6 @@ def ControlService(serviceToCheck,command):
         return process.stdout.read()
     except Exception,e:
         return render_template('error.html',resultsSET=e)
-
-
 
 def CleanServiceStatusOutput(serviceOutput):
     try:
@@ -357,7 +314,6 @@ def CleanServiceStatusOutput(serviceOutput):
         return buttonServiceFinalStatus
     except Exception,e:
         return render_template('error.html',resultsSET=e)
-
 
 
 app.secret_key = SECRETKEY
