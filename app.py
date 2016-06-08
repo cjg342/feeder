@@ -28,8 +28,6 @@ import datetime
 app = Flask(__name__)
 #app.config.from_pyfile('../app.cfg')
 
-# create table feedtimes (feedid integer primary key autoincrement,feeddate string,completed integer);
-
 dir = os.path.dirname(__file__)  # os.getcwd()
 # configFilePath=os.path.abspath(os.path.join(dir,"..")) #up one
 configFilePath = os.path.abspath(os.path.join(dir, "app.cfg"))

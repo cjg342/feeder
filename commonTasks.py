@@ -28,7 +28,7 @@ def db_insert_feedtime(dateObject,complete):
         """Connects to the specific database."""
         datetime = dateObject.strftime('%Y-%m-%d %H:%M:%S')
         con = connect_db()
-        cur = con.execute('''insert into feedtimes (feeddate,completed) values (?,?)''',[str(datetime), int(complete)])
+        cur = con.execute('''insert into feedtimes (feeddate,feedtype) values (?,?)''',[str(datetime), int(complete)])
         con.commit()
         cur.close()
         con.close()
@@ -36,23 +36,14 @@ def db_insert_feedtime(dateObject,complete):
         return 'ok'
     except Exception,e:
         return e.message
-# def db_get_last_feedtime():
-#     try:
-#         """Connects to the specific database."""
-#         con = connect_db()
-#         cur = con.execute('''select feeddate from feedtimes where completed=1 order by feeddate desc limit 1''')
-#         lastFeedDate=cur.fetchone()
-#         lastFeedDate = lastFeedDate[0]
-#         cur.close()
-#         con.close()
-#         return lastFeedDate
+
 
 def db_get_last_feedtimes(numberToGet):
         con = connect_db()
         cur = con.execute(''' select feeddate,description
                             from feedtimes ft
-                            join feedtypes fty on ft.completed=fty.feedtype
-                            where completed<>0
+                            join feedtypes fty on ft.feedtype=fty.feedtype
+                            where ft.feedtype<>0
                             order by feeddate desc
                             limit ?''', [str(numberToGet), ])
         LastFeedingTimes = cur.fetchall()
@@ -65,8 +56,8 @@ def db_get_scheduled_feedtimes(numberToGet):
     con = connect_db()
     cur = con.execute(''' select feeddate,description
                             from feedtimes ft
-                            join feedtypes fty on ft.completed=fty.feedtype
-                            where completed=0
+                            join feedtypes fty on ft.feedtype=fty.feedtype
+                            where ft.feedtype=0
                             order by feeddate desc
                         limit ?''', [str(numberToGet), ])
     LastFeedingTimes = cur.fetchall()
